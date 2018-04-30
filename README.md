@@ -1,4 +1,4 @@
-![](http://www.sharix.site/static/img/tiger.png)
+![](http://www.sharix.site/static/img/tiger.svg)
 
 # sharix-ml
 =========================
