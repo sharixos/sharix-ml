@@ -69,7 +69,6 @@ if __name__ == '__main__':
     nb = bayes.NaiveBayes(len(wv.vocab), pathlabels)
     for path in pathlabels:
         nb.feed(trainset_dict[path], [path] * len(trainset_dict[path]))
-    nb.feed_end()
 
     truecount, falsecount = 0,0
     for path in pathlabels:

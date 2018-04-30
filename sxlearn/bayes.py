@@ -31,6 +31,10 @@ class NaiveBayes(object):
             self.sum_xvec_dict[l] = np.ones(num_x) # Laplace smooth +1
             self.hot_sum_dict[l] = num_x
 
+        self.py_dict = {}
+        self.regularized_xvec_dict = {}
+
+
     def feed(self, train_x, train_y):
         self.num_training += len(train_x)
         for i in range(len(train_x)):
@@ -38,9 +42,7 @@ class NaiveBayes(object):
             self.sum_xvec_dict[train_y[i]] += train_x[i]
             self.hot_sum_dict[train_y[i]] += sum(train_x[i])
     
-    def feed_end(self):
-        self.py_dict = {}
-        self.regularized_xvec_dict = {}
+        # update parameter
         for l in self.labels:
             self.py_dict[l] = np.log(float(self.num_y_dict[l]) / self.num_training)
             self.regularized_xvec_dict[l] = np.log(self.sum_xvec_dict[l] / self.hot_sum_dict[l])

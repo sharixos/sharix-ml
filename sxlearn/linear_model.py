@@ -33,12 +33,12 @@ class LinearRegression(object):
     def loss(self):
         return np.sum((self.hypothesis() - self.train_y) ** 2) / 2*self.n
 
-    def gratitude(self):
+    def gradient(self):
         delta = np.array(self.hypothesis() - self.train_y)
         return np.dot(delta.T, self.train_x) / self.n
 
     def train(self,iteration, alpha):
-        """use gratitude to move steps
+        """use gradient to move steps
         
         Args:
             iteration
@@ -49,7 +49,7 @@ class LinearRegression(object):
         """
         cost_list = []
         for i in range(iteration):
-            self.theta -= alpha * self.gratitude()
+            self.theta -= alpha * self.gradient()
             cost_list.append(self.loss())
         return cost_list
         
@@ -108,7 +108,7 @@ class Sensor(object):
                 cost += -1 * self.train_y[i] * h[i]
         return cost
 
-    def gratitude(self):
+    def gradient(self):
         delta = np.zeros([1,self.k+1])
         h = self.hypothesis()
         for i in range(self.n):
@@ -117,7 +117,7 @@ class Sensor(object):
         return delta
 
     def train(self,iteration, alpha):
-        """use gratitude to move steps
+        """use gradient to move steps
         
         Args:
             iteration
@@ -128,7 +128,7 @@ class Sensor(object):
         """
         cost_list = []
         for i in range(iteration):
-            self.theta -= alpha * self.gratitude()[0]
+            self.theta -= alpha * self.gradient()[0]
             cost_list.append(self.loss())
         return cost_list
         

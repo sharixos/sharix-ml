@@ -32,7 +32,6 @@ if __name__ == '__main__':
 
     nb = bayes.NaiveBayes(len(wv.vocab), y)
     nb.feed(train_x, y)
-    nb.feed_end()
 
     # pred = nb.predict(train_x[1])
     # print(pred, y[1])
