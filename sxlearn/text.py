@@ -3,6 +3,13 @@ import numpy as np
 
 class WordVector(object):
     """
+    
+    Author: [@Wang Xin Gang](https://github.com/sharixos)
+
+    Website: http://www.sharix.site/
+    
+    Github: https://github.com/sharixos
+
     Attributes:
         self.vocab: the whole vacabulary
     """

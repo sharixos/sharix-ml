@@ -1,8 +1,14 @@
 import numpy as np 
 
 class LogisticRegression2C(object):
-    """train_x must be a n*k list
+    """ 2-classification logistic regression model
     
+    Author: [@Wang Xin Gang](https://github.com/sharixos)
+
+    Website: http://www.sharix.site/
+    
+    Github: https://github.com/sharixos
+
     Args:
         train_x, train_y, need_normalized (optional)
     Attributes:
@@ -12,6 +18,7 @@ class LogisticRegression2C(object):
         train_x: the dimension here is dim+1
         train_y:
         need_normalzied: 1 xdata need to be normalized, 0 no need
+
     """
     def __init__(self, train_x, train_y, need_normalized = 0):
         self.n,self.dim = np.shape(train_x)
@@ -24,7 +31,7 @@ class LogisticRegression2C(object):
                 maxxi = np.max(self.train_x[:,i])
                 self.train_x[:,i] = (self.train_x[:,i] - minxi)/(maxxi-minxi)
                 self.normalized_value.append([minxi, maxxi])
-        self.train_x = np.concatenate((np.ones([self.n,1]), train_x), axis=1) # there is a theta0
+        self.train_x = np.concatenate((np.zeros([self.n,1]), train_x), axis=1) # there is a theta0
         self.theta = np.array(np.ones(self.dim+1))
 
     def sigmoid(self, z):
@@ -67,10 +74,13 @@ class LogisticRegression2C(object):
             a list of loss
         """
         cost_list = []
+        theta_list = []
+        print(self.theta)
         for _ in range(iteration):
+            theta_list.append(self.theta.copy())
             self.theta -= alpha * self.gradient()
             cost_list.append(self.loss())
-        return cost_list
+        return cost_list, theta_list
         
     def predict(self, x):
         """
@@ -89,34 +99,38 @@ class LogisticRegression2C(object):
 
         
 class LogisticRegression(object):
-    """train_x must be a n*k list
+    """multi-classification logistic regression model
     
+    Author: [@Wang Xin Gang](https://github.com/sharixos)
+
+    Website: http://www.sharix.site/
+    
+    Github: https://github.com/sharixos
+
     Args:
-        train_x, train_y, need_normalized (optional)
+        xdim, ylabes, need_normalized (optional)
     Attributes:
         n: the input_size, 
         k: the dimension of input x
-        train_x: the dimension here is k+1
-        train_y:
         need_normalzied: 1 xdata need to be normalized, 0 no need
 
         labels: the class of y
         label_theta: every kind of y related to its theta, only K-1 theta needed for K types of y
     """
-    def __init__(self, xdim, ylabes, need_normalized = 0):
+    def __init__(self, xdim, ylabels, need_normalized = 0):
         self.dim = xdim
         self.need_normalized = need_normalized
-        # self.train_x,self.train_y = train_x,train_y
-        self.labels = ylabes
+        self.labels = ylabels
+        self.K = len(ylabels)
 
         self.label_theta = {}
         for label in self.labels[:-1]:
-            self.label_theta[label] = np.array(np.ones(self.dim+1))
+            self.label_theta[label] = np.array(np.zeros(self.dim+1))
 
     def hypothesis(self, label, x):
         S = 0
         for l in self.labels[:-1]:
-            S += np.exp(np.dot(self.label_theta[l].T, x))
+            S += np.exp(np.dot(np.array(self.label_theta[l].T), x))
         
         if label in self.labels[:-1]:
             return np.exp(np.dot(self.label_theta[label].T, x)) / (1+S)
@@ -126,7 +140,7 @@ class LogisticRegression(object):
 
     def loss(self, train_x, train_y):
         """
-        use 1-j to represent loss
+        use -j to represent loss
         """
         j = 0
         for i in range(len(train_x)):
@@ -141,63 +155,65 @@ class LogisticRegression(object):
         Args:
             iteration
             alpha
-        
+        Middle Variables:
+            train_x: the dimension here is k+1
+            train_y: input_y
+
         Returans:
-            a list of loss
+            cost_list & theta_list
         """
         if self.need_normalized == 1:
             self.normalized_value = []
             for i in range(self.dim):
                 minxi = np.min(input_x[:,i])
                 maxxi = np.max(input_x[:,i])
-                train_x[:,i] = (input_x[:,i] - minxi)/(maxxi-minxi)
+                input_x[:,i] = (input_x[:,i] - minxi)/(maxxi-minxi)
                 self.normalized_value.append([minxi, maxxi])
-        train_x = np.concatenate((np.ones([self.n,1]), train_x), axis=1) # there is a theta0
+        train_x = np.concatenate((np.ones([len(input_x),1]), input_x), axis=1) # there is a theta0
         train_y = input_y
 
-        cost_list = []
-        for _ in range(iteration):
+        cost_list,theta_list = [],[]
+        for ite in range(iteration):
+            real_alpha = (40.0 / (ite+1) + 1) * alpha
+            theta_list.append(self.label_theta[self.labels[0]].copy())
             for i in range(len(train_x)):
                 x,label = train_x[i], train_y[i]
-                zlist = []
+                S = 0
+                expzlist = {}
                 for l in self.labels[:-1]:
-                    if l == lab .:
-                        
-
-    def gradient(self):
-        g = {}
-        for label in self.labels:
-            g[label] = np.zeros(self.dim+1)
-        
-        for i in range(self.n):
-            x,label = self.train_x[i], self.train_y[i]
-            delta = 1 - self.hypothesis(label, x)
-            g[label] += delta * x
-        return g
-
-    #     """
-    #     cost_list = []
-    #     for _ in range(iteration):
-    #         g = self.gradient()
-    #         for label in self.labels:
-    #             self.label_theta[label] -= alpha * g[label]
-    #         cost_list.append(self.loss())
-    #     return cost_list
-        
+                    expzlist[l] = np.exp(np.dot(self.label_theta[l].T, x))
+                    S += expzlist[l]
+                h = self.hypothesis(label, x)
+                # h_z_partial = {}
+                if label == self.labels[-1]:
+                    for l in self.labels[:-1]:
+                        delta = -1*expzlist[l] /pow(1+S, 2)
+                        self.label_theta[l] += (1/h) * real_alpha * delta * x # update theta
+                else:
+                    for l in self.labels[:-1]:
+                        if label == l:
+                            delta = (expzlist[l]*(1+S) - pow(expzlist[l],2)) / pow(1+S, 2)
+                        else:
+                            delta = -1*(expzlist[l]*expzlist[label]) / pow(1+S, 2)
+                        self.label_theta[l] += (1/h) * real_alpha * delta * x # update theta
+            cost_list.append(self.loss(train_x,train_y))
+        return cost_list,theta_list
 
             
 
-    def predict(self, x):
+    def predict(self, x1):
         """
         Args:
             x:2-dim array to express x, [[x1,x2,...]]
         Returns:
             the predicted y
         """
-        x = np.array(x, dtype = float)
         if self.need_normalized == 1:
             for i in range(self.dim):
                 minxi,maxxi = self.normalized_value[i]
-                x[:,i] = (x[:,i] - minxi)/(maxxi-minxi)
-        x = np.concatenate((np.ones([1,1]), x), axis=1)
-        return self.sigmoid(np.dot(x, self.theta.T))
+                x1[:,i] = (x1[:,i] - minxi)/(maxxi-minxi)
+        px = np.concatenate((np.ones([1,1]), x1), axis=1)
+        hdict = {}
+        for l in self.labels:
+            hdict[l] = self.hypothesis(l, px[0])
+        return sorted(hdict,key=lambda x:hdict[x])[-1]

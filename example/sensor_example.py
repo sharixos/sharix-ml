@@ -10,9 +10,10 @@ if __name__ == '__main__':
     x = raw_input_data[:, :2]
     y = raw_input_data[:, 2]
 
-    sensor = linear_model.Sensor(x,y,need_normalized=1)
+    sensor = linear_model.Sensor(x,y)
     cost_list = sensor.train(100,0.01)
     print(sensor.predict([[3.4,4.2]]))
+    print(sensor.theta)
 
     import matplotlib.pyplot as plt
     ax = np.linspace(1, 100, 100)

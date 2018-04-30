@@ -1,10 +1,18 @@
 import numpy as np
 
 class LinearRegression(object):
-    """train_x must be a n*k list
+    """ Linear Regression
+    
+    Author: Wang Xin Gang
+
+    Website: http://www.sharix.site/
+    
+    Github: https://github.com/sharixos
+
     
     Args:
         train_x, train_y, need_normalized (optional)
+        train_x must be a n*k list
     Attributes:
         n: the input_size, 
         k: the dimension of input x
@@ -70,10 +78,17 @@ class LinearRegression(object):
 
 
 class Sensor(object):
-    """train_x must be a n*k list
+    """sensor
+    
+    Author: [@Wang Xin Gang](https://github.com/sharixos)
+
+    Website: http://www.sharix.site/
+    
+    Github: https://github.com/sharixos
     
     Args:
         train_x, train_y, need_normalized (optional)
+        train_x must be a n*k list
     Attributes:
         n: the input_size, 
         k: the dimension of input x

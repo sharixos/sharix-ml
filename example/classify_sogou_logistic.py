@@ -1,11 +1,10 @@
 """
-    Author: Wang Xin Gang
+    Author: [@Wang Xin Gang](https://github.com/sharixos)
 
     Website: http://www.sharix.site/
     
     Github: https://github.com/sharixos
 """
-
 
 import os
 import jieba
@@ -14,7 +13,7 @@ import numpy as np
 
 import sys
 sys.path.append('../sxlearn')
-import bayes
+import logistic
 import text
 
 # data8 = '../data/sogou/C000008/'
@@ -36,7 +35,7 @@ trainpercent = 0.9
 if __name__ == '__main__':
     # pathlabels = [data8, data10, data13, data14,
     #               data16, data20, data22, data23, data24]
-    pathlabels = [data1, data2, data3, data4]
+    pathlabels = [data1, data2, data3,data4]
 
 
     wv = text.WordVector()
@@ -75,14 +74,29 @@ if __name__ == '__main__':
     
     print('finished get train and test set')
 
-    nb = bayes.NaiveBayes(len(wv.vocab), pathlabels)
+    lr = logistic.LogisticRegression(len(wv.vocab), pathlabels)
+
+    # prepare train_x and train_y, the data need to be shuffled
+    train = []
     for path in pathlabels:
-        nb.feed(trainset_dict[path], [path] * len(trainset_dict[path]))
+        for x in trainset_dict[path]:
+            train.append([x,path])
+    
+    import random
+    random.shuffle(train)
+
+    train_x, train_y = [],[]
+    for x,y in train:
+        train_x.append(x)
+        train_y.append(y)
+    cost_list,theta_list = lr.feed(train_x,train_y,iteration=50,alpha=0.001)
+    print(theta_list)
+    print(cost_list)
 
     truecount, falsecount = 0,0
     for path in pathlabels:
         for vec in testset_dict[path]:
-            pred = nb.predict(vec)
+            pred = lr.predict([vec])
             print(pred, path)
             if pred == path:
                 truecount += 1
@@ -92,3 +106,10 @@ if __name__ == '__main__':
     print(truecount, falsecount)
     accuracy = float(truecount)/(truecount + falsecount) 
     print('accuracy:' , accuracy)
+
+    import matplotlib.pyplot as plt
+
+    ax = np.linspace(1, 50, 50)
+    plt.figure(1)
+    plt.plot(ax, cost_list)
+    plt.show()

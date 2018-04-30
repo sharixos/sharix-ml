@@ -2,8 +2,14 @@ import numpy as np
 from functools import reduce
 
 class NaiveBayes(object):
-    """train_x must be a n*k list
+    """
     
+    Author: [@Wang Xin Gang](https://github.com/sharixos)
+
+    Website: http://www.sharix.site/
+    
+    Github: https://github.com/sharixos
+
     Args:
         num_x: the dimension of vector
         labels: the list of label

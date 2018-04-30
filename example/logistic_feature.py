@@ -2,7 +2,7 @@ import numpy as np
 
 import sys
 sys.path.append('../sxlearn')
-import bayes
+import logistic
 import text
 
 
@@ -31,14 +31,12 @@ if __name__ == '__main__':
     print(train_x)
 
     ylabels = list(set(y))
-    nb = bayes.NaiveBayes(len(wv.vocab), ylabels)
-    nb.feed(train_x, y)
-
-    # pred = nb.predict(train_x[1])
-    # print(pred, y[1])
+    lr = logistic.LogisticRegression(len(wv.vocab),ylabels)
+    lr.feed(train_x, y)
+    
     count, count2 = 0, 0
     for i in range(len(train_x)):
-        pred = nb.predict(train_x[i])
+        pred = lr.predict([train_x[i]])
         if pred == y[i]:
             print('true')
             count += 1

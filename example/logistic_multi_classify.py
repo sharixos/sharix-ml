@@ -1,4 +1,13 @@
+"""
+    Author: [@Wang Xin Gang](https://github.com/sharixos)
+
+    Website: http://www.sharix.site/
+    
+    Github: https://github.com/sharixos
+"""
+
 import numpy as np
+
 
 import sys
 sys.path.append('../sxlearn')
@@ -9,14 +18,15 @@ if __name__ == '__main__':
     raw_input_data = np.loadtxt(data_path + 'test/2-classify.txt')
     x = raw_input_data[:, :2]
     y = raw_input_data[:, 2]
+    ylabels = list(set(y))
 
-    lr = logistic.LogisticRegression2C(x,y)
-    cost_list,theta_list = lr.train(500,0.001)
-    print(lr.predict([[-0.026632,10.427743]]))
-    print(lr.theta)
-    bestx = np.arange(-3.0,3.0,0.1)
+    lr = logistic.LogisticRegression(len(x[0]), ylabels)
+    cost_list, theta_list = lr.feed(x,y, iteration=100, alpha=0.01)
+    print(lr.label_theta)
+    print(lr.predict([[1,1.6]]))
+    bestx = np.arange(-3.0,5.0,0.1)
     besty = []
-    for theta in theta_list[-1:]:
+    for theta in theta_list[0:50]:
         by = -1*(theta[0]+theta[1]*bestx)/theta[2]
         besty.append(by)
 
@@ -36,17 +46,15 @@ if __name__ == '__main__':
     ax.scatter(xcord1, ycord1, s=20, c='red', marker='s', alpha = .5)
     ax.scatter(xcord2, ycord2, s=20, c='green', alpha=.5)
 
-    # ax.plot(bestx,besty)
     for by in besty:
         ax.plot(bestx, by)
-        # print(by)
 
     plt.title('input point')
     plt.xlabel('X1')
     plt.ylabel('X2')
     plt.show()
 
-    ax = np.linspace(1, 500, 500)
+    ax = np.linspace(1, 100, 100)
     plt.figure(1)
     plt.plot(ax, cost_list)
     plt.show()
