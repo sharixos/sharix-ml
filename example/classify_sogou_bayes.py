@@ -12,20 +12,11 @@ import jieba
 import re
 import numpy as np
 
-import sys
+import sys,time
 sys.path.append('../sxlearn')
 import bayes
 import text
 
-# data8 = '../data/sogou/C000008/'
-# data10 = '../data/sogou/C000010/'
-# data13 = '../data/sogou/C000013/'
-# data14 = '../data/sogou/C000014/'
-# data16 = '../data/sogou/C000016/'
-# data20 = '../data/sogou/C000020/'
-# data22 = '../data/sogou/C000022/'
-# data23 = '../data/sogou/C000023/'
-# data24 = '../data/sogou/C000024/'
 
 data1 = '../data/sogoumini/1/'
 data2 = '../data/sogoumini/2/'
@@ -34,10 +25,9 @@ data4 = '../data/sogoumini/4/'
 
 trainpercent = 0.9
 if __name__ == '__main__':
-    # pathlabels = [data8, data10, data13, data14,
-    #               data16, data20, data22, data23, data24]
     pathlabels = [data1, data2, data3, data4]
 
+    time1 = time.time()
 
     wv = text.WordVector()
 
@@ -57,6 +47,7 @@ if __name__ == '__main__':
             wv.add_document(wv.get_word_list(fullpath,encoding='gbk'))
 
     print('finished establishing words')
+    time2 = time.time()
 
     print('getting document vector')
     trainset_dict, testset_dict = {}, {}
@@ -73,12 +64,14 @@ if __name__ == '__main__':
         trainset_dict[path] = vectordict[path][:until]
         testset_dict[path] = vectordict[path][until:]
     
+    time3 = time.time()
     print('finished get train and test set')
 
     nb = bayes.NaiveBayes(len(wv.vocab), pathlabels)
     for path in pathlabels:
         nb.feed(trainset_dict[path], [path] * len(trainset_dict[path]))
 
+    time4 = time.time()
     truecount, falsecount = 0,0
     for path in pathlabels:
         for vec in testset_dict[path]:
@@ -92,3 +85,11 @@ if __name__ == '__main__':
     print(truecount, falsecount)
     accuracy = float(truecount)/(truecount + falsecount) 
     print('accuracy:' , accuracy)
+
+    time5 = time.time()
+
+    print('------ time cost list -------')
+    print('establish wordlist: %f' % (time2-time1))
+    print('get train and test one-hot vector: %f' % (time3-time2))
+    print('training cost: %f' % (time4-time3))
+    print('test cost:%f' % (time5-time4))

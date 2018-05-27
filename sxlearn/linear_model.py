@@ -1,15 +1,16 @@
 import numpy as np
 
+
 class LinearRegression(object):
     """ Linear Regression
-    
+
     Author: Wang Xin Gang
 
     Website: http://www.sharix.site/
-    
+
     Github: https://github.com/sharixos
 
-    
+
     Args:
         train_x, train_y, need_normalized (optional)
         train_x must be a n*k list
@@ -21,18 +22,20 @@ class LinearRegression(object):
         train_y:
         need_normalzied: 1 xdata need to be normalized, 0 no need
     """
-    def __init__(self, train_x, train_y, need_normalized = 0):
-        self.n,self.k = np.shape(train_x)
+
+    def __init__(self, train_x, train_y, need_normalized=0):
+        self.n, self.k = np.shape(train_x)
         self.need_normalized = need_normalized
-        self.train_x,self.train_y = train_x,train_y
+        self.train_x, self.train_y = train_x, train_y
         if self.need_normalized == 1:
             self.normalized_value = []
             for i in range(self.k):
-                minxi = np.min(self.train_x[:,i])
-                maxxi = np.max(self.train_x[:,i])
-                self.train_x[:,i] = (self.train_x[:,i] - minxi)/(maxxi-minxi)
+                minxi = np.min(self.train_x[:, i])
+                maxxi = np.max(self.train_x[:, i])
+                self.train_x[:, i] = (self.train_x[:, i] - minxi)/(maxxi-minxi)
                 self.normalized_value.append([minxi, maxxi])
-        self.train_x = np.concatenate((np.ones([self.n,1]), train_x), axis=1) # there is a theta0
+        self.train_x = np.concatenate(
+            (np.ones([self.n, 1]), train_x), axis=1)  # there is a theta0
         self.theta = np.array(np.ones(self.k+1))
 
     def hypothesis(self):
@@ -45,13 +48,13 @@ class LinearRegression(object):
         delta = np.array(self.hypothesis() - self.train_y)
         return np.dot(delta.T, self.train_x) / self.n
 
-    def train(self,iteration, alpha):
+    def train(self, iteration, alpha):
         """use gradient to move steps
-        
+
         Args:
             iteration
             alpha
-        
+
         Returans:
             a list of loss
         """
@@ -60,7 +63,7 @@ class LinearRegression(object):
             self.theta -= alpha * self.gradient()
             cost_list.append(self.loss())
         return cost_list
-        
+
     def predict(self, x):
         """
         Args:
@@ -68,24 +71,24 @@ class LinearRegression(object):
         Returns:
             the predicted y
         """
-        x = np.array(x, dtype = float)
+        x = np.array(x, dtype=float)
         if self.need_normalized == 1:
             for i in range(self.k):
-                minxi,maxxi = self.normalized_value[i]
-                x[:,i] = (x[:,i] - minxi)/(maxxi-minxi)
-        x = np.concatenate((np.ones([1,1]), x), axis=1)
+                minxi, maxxi = self.normalized_value[i]
+                x[:, i] = (x[:, i] - minxi)/(maxxi-minxi)
+        x = np.concatenate((np.ones([1, 1]), x), axis=1)
         return np.dot(x, self.theta.T)
 
 
 class Sensor(object):
     """sensor
-    
+
     Author: [@Wang Xin Gang](https://github.com/sharixos)
 
     Website: http://www.sharix.site/
-    
+
     Github: https://github.com/sharixos
-    
+
     Args:
         train_x, train_y, need_normalized (optional)
         train_x must be a n*k list
@@ -98,18 +101,19 @@ class Sensor(object):
         need_normalzied: 1 xdata need to be normalized, 0 no need
     """
 
-    def __init__(self, train_x, train_y, need_normalized = 0):
-        self.n,self.k = np.shape(train_x)
+    def __init__(self, train_x, train_y, need_normalized=0):
+        self.n, self.k = np.shape(train_x)
         self.need_normalized = need_normalized
-        self.train_x,self.train_y = train_x,train_y
+        self.train_x, self.train_y = train_x, train_y
         if self.need_normalized == 1:
             self.normalized_value = []
             for i in range(self.k):
-                minxi = np.min(self.train_x[:,i])
-                maxxi = np.max(self.train_x[:,i])
-                self.train_x[:,i] = (self.train_x[:,i] - minxi)/(maxxi-minxi)
+                minxi = np.min(self.train_x[:, i])
+                maxxi = np.max(self.train_x[:, i])
+                self.train_x[:, i] = (self.train_x[:, i] - minxi)/(maxxi-minxi)
                 self.normalized_value.append([minxi, maxxi])
-        self.train_x = np.concatenate((np.ones([self.n,1]), train_x), axis=1) # there is a theta0
+        self.train_x = np.concatenate(
+            (np.ones([self.n, 1]), train_x), axis=1)  # there is a theta0
         self.theta = np.array(np.ones(self.k+1))
 
     def hypothesis(self):
@@ -124,20 +128,20 @@ class Sensor(object):
         return cost
 
     def gradient(self):
-        delta = np.zeros([1,self.k+1])
+        delta = np.zeros([1, self.k+1])
         h = self.hypothesis()
         for i in range(self.n):
             if self.train_y[i] * h[i] < 0:
-                delta+= -1*self.train_y[i]*self.train_x[i]
+                delta += -1*self.train_y[i]*self.train_x[i]
         return delta
 
-    def train(self,iteration, alpha):
+    def train(self, iteration, alpha):
         """use gradient to move steps
-        
+
         Args:
             iteration
             alpha
-        
+
         Returans:
             a list of loss
         """
@@ -146,7 +150,7 @@ class Sensor(object):
             self.theta -= alpha * self.gradient()[0]
             cost_list.append(self.loss())
         return cost_list
-        
+
     def predict(self, x):
         """
         Args:
@@ -154,12 +158,12 @@ class Sensor(object):
         Returns:
             the predicted y +1,-1
         """
-        x = np.array(x, dtype = float)
+        x = np.array(x, dtype=float)
         if self.need_normalized == 1:
             for i in range(self.k):
-                minxi,maxxi = self.normalized_value[i]
-                x[:,i] = (x[:,i] - minxi)/(maxxi-minxi)
-        x = np.concatenate((np.ones([1,1]), x), axis=1)
-        if np.dot(x,self.theta.T) > 0:
+                minxi, maxxi = self.normalized_value[i]
+                x[:, i] = (x[:, i] - minxi)/(maxxi-minxi)
+        x = np.concatenate((np.ones([1, 1]), x), axis=1)
+        if np.dot(x, self.theta.T) > 0:
             return 1
         return -1

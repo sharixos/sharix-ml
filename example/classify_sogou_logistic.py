@@ -6,7 +6,7 @@
     Github: https://github.com/sharixos
 """
 
-import os
+import os, time
 import jieba
 import re
 import numpy as np
@@ -37,6 +37,7 @@ if __name__ == '__main__':
     #               data16, data20, data22, data23, data24]
     pathlabels = [data1, data2, data3,data4]
 
+    time1 = time.time()
 
     wv = text.WordVector()
 
@@ -56,6 +57,7 @@ if __name__ == '__main__':
             wv.add_document(wv.get_word_list(fullpath,encoding='gbk'))
 
     print('finished establishing words')
+    time2 = time.time()
 
     print('getting document vector')
     trainset_dict, testset_dict = {}, {}
@@ -73,6 +75,8 @@ if __name__ == '__main__':
         testset_dict[path] = vectordict[path][until:]
     
     print('finished get train and test set')
+    time3 = time.time()
+
 
     lr = logistic.LogisticRegression(len(wv.vocab), pathlabels)
 
@@ -93,6 +97,8 @@ if __name__ == '__main__':
     print(theta_list)
     print(cost_list)
 
+    time4 = time.time()
+
     truecount, falsecount = 0,0
     for path in pathlabels:
         for vec in testset_dict[path]:
@@ -107,9 +113,17 @@ if __name__ == '__main__':
     accuracy = float(truecount)/(truecount + falsecount) 
     print('accuracy:' , accuracy)
 
-    import matplotlib.pyplot as plt
+    time5 = time.time()
+    print('------ time cost list -------')
+    print('establish wordlist: %f' % (time2-time1))
+    print('get train and test one-hot vector: %f' % (time3-time2))
+    print('training cost: %f' % (time4-time3))
+    print('test cost:%f' % (time5-time4))
 
-    ax = np.linspace(1, 50, 50)
-    plt.figure(1)
-    plt.plot(ax, cost_list)
-    plt.show()
+    
+    # import matplotlib.pyplot as plt
+
+    # ax = np.linspace(1, 50, 50)
+    # plt.figure(1)
+    # plt.plot(ax, cost_list)
+    # plt.show()

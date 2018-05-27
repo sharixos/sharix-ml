@@ -212,6 +212,7 @@ class LogisticRegression(object):
             for i in range(self.dim):
                 minxi,maxxi = self.normalized_value[i]
                 x1[:,i] = (x1[:,i] - minxi)/(maxxi-minxi)
+
         px = np.concatenate((np.ones([1,1]), x1), axis=1)
         hdict = {}
         for l in self.labels:

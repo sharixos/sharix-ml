@@ -16,7 +16,7 @@ if __name__ == '__main__':
     print(lr.theta)
     bestx = np.arange(-3.0,3.0,0.1)
     besty = []
-    for theta in theta_list[-1:]:
+    for theta in theta_list[3:10]:
         by = -1*(theta[0]+theta[1]*bestx)/theta[2]
         besty.append(by)
 

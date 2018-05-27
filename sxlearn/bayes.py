@@ -1,13 +1,14 @@
-import numpy as np 
+import numpy as np
 from functools import reduce
+
 
 class NaiveBayes(object):
     """
-    
+
     Author: [@Wang Xin Gang](https://github.com/sharixos)
 
     Website: http://www.sharix.site/
-    
+
     Github: https://github.com/sharixos
 
     Args:
@@ -34,12 +35,11 @@ class NaiveBayes(object):
 
         for l in self.labels:
             self.num_y_dict[l] = 0
-            self.sum_xvec_dict[l] = np.ones(num_x) # Laplace smooth +1
+            self.sum_xvec_dict[l] = np.ones(num_x)  # Laplace smooth +1
             self.hot_sum_dict[l] = num_x
 
         self.py_dict = {}
         self.regularized_xvec_dict = {}
-
 
     def feed(self, train_x, train_y):
         self.num_training += len(train_x)
@@ -47,19 +47,21 @@ class NaiveBayes(object):
             self.num_y_dict[train_y[i]] += 1
             self.sum_xvec_dict[train_y[i]] += train_x[i]
             self.hot_sum_dict[train_y[i]] += sum(train_x[i])
-    
+
         # update parameter
         for l in self.labels:
-            self.py_dict[l] = np.log(float(self.num_y_dict[l]) / self.num_training)
-            self.regularized_xvec_dict[l] = np.log(self.sum_xvec_dict[l] / self.hot_sum_dict[l])
+            self.py_dict[l] = np.log(
+                float(self.num_y_dict[l]) / self.num_training)
+            self.regularized_xvec_dict[l] = np.log(
+                self.sum_xvec_dict[l] / self.hot_sum_dict[l])
 
     def predict(self, inputx):
         """
-        make sure you call feed_end before predict
+
         """
         x = np.array(inputx)
         result = {}
         for l in self.labels:
             px = sum(self.regularized_xvec_dict[l] * x)
-            result[l] = self.py_dict[l] + px # use log so here is +
-        return sorted(result, key=lambda x:result[x])[-1] # return max
+            result[l] = self.py_dict[l] + px  # use log so here is +
+        return sorted(result, key=lambda x: result[x])[-1]  # return max

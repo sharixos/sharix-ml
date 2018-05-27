@@ -1,0 +1,9 @@
+#sogoumini - naive bayes
+accuracy: 0.9166666666666666
+------ time cost list -------
+establish wordlist: 5.466036
+get train and test one-hot vector: 180.643197
+training cost: 0.819665
+test cost:0.564790
+
+
