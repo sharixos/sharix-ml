@@ -321,7 +321,3 @@ def feed(self, input_x, input_y, iteration=100, alpha=0.01):
 [二分类和多分类logistic回归的完整代码](https://github.com/sharixos/sharix-ml/blob/master/sxlearn/logistic.py)
 我使用这个多分类logistic回归模型对部分搜狗的中文数据进行分类，取得了比较好的效果
 
-
-
-## 后记
-感谢 [@PieHust](https://github.com/PieHust) 在本系列的实现过程中，提供的使用函数式编程的方法
